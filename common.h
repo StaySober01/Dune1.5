@@ -10,9 +10,21 @@
 /* ================= system parameters =================== */
 #define TICK 10		// time unit(ms)
 
+#define MAX_WIDTH 100
+#define MAX_HEIGHT 30
+
 #define N_LAYER 2
-#define MAP_WIDTH	60
-#define MAP_HEIGHT	18
+#define MAP_X	60
+#define MAP_Y	18
+
+#define STATE_X 100
+#define STATE_Y 18
+
+#define MESSAGE_X 60
+#define MESSAGE_Y 30
+
+#define COMMAND_X 100
+#define COMMAND_Y 30
 
 
 /* ================= 위치와 방향 =================== */

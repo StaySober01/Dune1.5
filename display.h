@@ -15,11 +15,16 @@
 #define COLOR_CURSOR	112
 #define COLOR_RESOURCE  112
 
+
+
 // 지금은 자원, 맵, 커서만 표시
 // 앞으로 화면에 표시할 내용들 여기에 추가하기
 void display(
 	RESOURCE resource,
-	char map[N_LAYER][MAP_HEIGHT][MAP_WIDTH],
+	char map[N_LAYER][MAP_Y][MAP_X],
+	char state[STATE_Y][STATE_X - MAP_Y],
+	char message[MESSAGE_Y - MAP_Y][MESSAGE_X],
+	char command[COMMAND_Y - MAP_Y][COMMAND_X - MAP_X],
 	CURSOR cursor
 );
 

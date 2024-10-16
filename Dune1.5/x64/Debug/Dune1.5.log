@@ -1,0 +1,6 @@
+﻿  engine.c
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(47,25): warning C4048: 배열 첨자가 다릅니다. 'char (*)[82]'과(와) 'char [18][100]'
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(47,41): warning C4048: 배열 첨자가 다릅니다. 'char (*)[40]'과(와) 'char [30][100]'
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(71,26): warning C4048: 배열 첨자가 다릅니다. 'char (*)[82]'과(와) 'char [18][100]'
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(71,42): warning C4048: 배열 첨자가 다릅니다. 'char (*)[40]'과(와) 'char [30][100]'
+  Dune1.5.vcxproj -> C:\Users\kleenex\source\repos\Dune1.5\x64\Debug\Dune1.5.exe
