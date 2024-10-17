@@ -10,8 +10,8 @@
 /* ================= system parameters =================== */
 #define TICK 10		// time unit(ms)
 
-#define MAX_WIDTH 100
-#define MAX_HEIGHT 30
+#define MAX_X 100
+#define MAX_Y 25
 
 #define N_LAYER 2
 #define MAP_X	60

@@ -9,13 +9,14 @@
 #include "io.h"
 
 
-char backbuf[MAX_HEIGHT][MAX_WIDTH] = { 0 };
-char frontbuf[MAX_HEIGHT][MAX_WIDTH] = { 0 };
+char backbuf[MAX_Y][MAX_X] = { 0 };
+char frontbuf[MAX_Y][MAX_X] = { 0 };
 
-void project(char src[N_LAYER][MAP_Y][MAP_X], char dest[MAX_HEIGHT][MAX_WIDTH]);
+void project(char src[N_LAYER][MAX_Y][MAX_X], char dest[MAX_Y][MAX_X]);
+void state_project(char src[STATE_Y][STATE_X], char dest[MAX_Y][MAX_X]);
 void display_resource(RESOURCE resource);
 void display_map(char map[N_LAYER][MAP_Y][MAP_X]);
-void display_state(char state[STATE_Y][STATE_X - MAP_Y]);
+void display_state(char state[STATE_Y][STATE_X]);
 void display_cursor(CURSOR cursor);
 
 // 출력할 내용들의 좌상단(topleft) 좌표
@@ -29,7 +30,7 @@ const POSITION command_pos = { 19, 61 };
 void display(
 	RESOURCE resource,
 	char map[N_LAYER][MAP_Y][MAP_X],
-	char state[STATE_Y][STATE_X - MAP_Y],
+	char state[STATE_Y][STATE_X],
 	char message[MESSAGE_Y - MAP_Y][MESSAGE_X],
 	char command[COMMAND_Y - MAP_Y][COMMAND_X - MAP_X],
 	CURSOR cursor)
@@ -38,10 +39,6 @@ void display(
 	display_map(map);
 	display_state(state);
 	display_cursor(cursor);
-	// display_system_message()
-	// display_object_info()
-	// display_commands()
-	// ...
 }
 
 void display_resource(RESOURCE resource) {
@@ -54,9 +51,9 @@ void display_resource(RESOURCE resource) {
 }
 
 // subfunction of draw_map()
-void project(char src[N_LAYER][MAP_Y][MAP_X], char dest[MAX_HEIGHT][MAX_WIDTH]) {
-	for (int i = 0; i < MAP_Y; i++) {
-		for (int j = 0; j < MAP_X; j++) {
+void project(char src[N_LAYER][MAX_Y][MAX_X], char dest[MAX_Y][MAX_X]) {
+	for (int i = 0; i < MAX_Y; i++) {
+		for (int j = 0; j < MAX_X; j++) {
 			for (int k = 0; k < N_LAYER; k++) {
 				if (src[k][i][j] >= 0) {
 					dest[i][j] = src[k][i][j];
@@ -66,7 +63,7 @@ void project(char src[N_LAYER][MAP_Y][MAP_X], char dest[MAX_HEIGHT][MAX_WIDTH]) 
 	}
 }
 
-void state_project(char src[STATE_Y][STATE_X - MAP_Y], char dest[MAX_HEIGHT][MAX_WIDTH]) {
+void state_project(char src[STATE_Y][STATE_X], char dest[MAX_Y][MAX_X]) {
 	for (int i = 0; i < MAP_Y; i++) {
 		for (int j = 0; j < MAP_X; j++) {
 			if (src[i][i] >= 0) {
@@ -76,11 +73,11 @@ void state_project(char src[STATE_Y][STATE_X - MAP_Y], char dest[MAX_HEIGHT][MAX
 	}
 }
 
-void display_map(char map[N_LAYER][MAP_Y][MAP_X]) {
+void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 	project(map, backbuf);
 
-	for (int i = 0; i < MAP_Y; i++) {
-		for (int j = 0; j < MAP_X; j++) {
+	for (int i = 0; i < MAX_Y; i++) {
+		for (int j = 0; j < MAX_X; j++) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
 				POSITION pos = { i, j };
 				printc(padd(map_pos, pos), backbuf[i][j], COLOR_DEFAULT);
@@ -102,11 +99,11 @@ void display_cursor(CURSOR cursor) {
 	printc(padd(map_pos, curr), ch, COLOR_CURSOR);
 }
 
-void display_state(char state[STATE_Y][STATE_X - MAP_Y]) {
+void display_state(char state[STATE_Y][STATE_X]) {
 	state_project(state, backbuf);
 
 	for (int i = 0; i < STATE_Y; i++) {
-		for (int j = 0; j < STATE_X - MAP_Y; j++) {
+		for (int j = 0; j < STATE_X; j++) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
 				POSITION pos = { i, j };
 				printc(padd(state_pos, pos), backbuf[i][j], COLOR_DEFAULT);

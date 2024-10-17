@@ -18,7 +18,7 @@ CURSOR cursor = { { 1, 1 }, {1, 1} };
 
 
 /* ================= game data =================== */
-char map[N_LAYER][MAP_Y][MAP_X] = { 0 };
+char map[N_LAYER][MAX_Y][MAX_X] = { 0 };
 char state[STATE_Y][STATE_X] = { 0 };
 char message[MESSAGE_Y][MESSAGE_X] = { 0 };
 char command[COMMAND_Y][COMMAND_X] = { 0 };
@@ -108,35 +108,39 @@ void outro(void) {
 
 void init(void) {
 	// layer 0(map[0])에 지형 생성
-	for (int j = 0; j < MAP_X; j++) {
-		map[0][0][j] = '#';
-		map[0][MAP_Y - 1][j] = '#';
+	// MAP 영역 그리기
+	for (int j = 0; j < MAX_X; j++) {
+		map[0][0][j] = '#'; // 위쪽 경계
+		map[0][MAP_Y - 1][j] = '#'; // 아래쪽 경계
+		map[0][MAX_Y - 1][j] = '#';
 	}
 
-	for (int i = 1; i < MAP_Y - 1; i++) {
-		map[0][i][0] = '#';
-		map[0][i][MAP_X - 1] = '#';
-		for (int j = 1; j < MAP_X - 1; j++) {
-			map[0][i][j] = ' ';
+	for (int i = 1; i < MAX_Y - 1; i++) {
+		map[0][i][0] = '#'; // 왼쪽 경계
+		map[0][i][MAP_X] = '#';
+		map[0][i][MAX_X - 1] = '#';
+		if (i < MAP_Y - 1) {
+			for (int j = 1; j < MAP_X - 1; j++) {
+				map[0][i][j] = ' '; // 내부는 빈 공간
+			}
+			for (int j = MAP_X + 1; j < MAX_X - 1; j++) {
+				map[0][i][j] = ' ';
+			}
 		}
-	}
-
-	for (int j = 61; j < STATE_X; j++) {
-		state[0][j] = '#';
-		state[STATE_Y - 1][j] = '#';
-	}
-
-	for (int i = 1; i < STATE_Y; i++) {
-		state[i][0] = '#';
-		state[i][STATE_X - 1] = '#';
-		for (int j = 62; j < STATE_X - 1; j++) {
-			state[i][j] = ' ';
+		
+		else if (i >= MAP_Y) {
+			for (int j = 1; j < MAP_X; j++) {
+				map[0][i][j] = ' ';
+			}
+			for (int j = MAP_X + 1; j < MAX_X - 1; j++) {
+				map[0][i][j] = ' ';
+			}
 		}
 	}
 
 	// layer 1(map[1])은 비워 두기(-1로 채움)
-	for (int i = 0; i < MAP_Y; i++) {
-		for (int j = 0; j < MAP_X; j++) {
+	for (int i = 0; i < MAX_Y; i++) {
+		for (int j = 0; j < MAX_X; j++) {
 			map[1][i][j] = -1;
 		}
 	}
