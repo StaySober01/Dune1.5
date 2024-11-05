@@ -45,6 +45,7 @@ typedef enum {
 	k_none = 0, k_up, k_right, k_left, k_down,
 	k_quit,
 	k_space,
+	k_esc,
 	k_undef, // 정의되지 않은 키 입력	
 } KEY;
 
@@ -114,6 +115,8 @@ typedef struct {
 #define ROCK 90
 
 int mapData[MAP_Y][MAP_X];
+int colorData[MAP_Y][MAP_X];
+int textData[MAP_Y][MAP_X];
 
 #endif
 

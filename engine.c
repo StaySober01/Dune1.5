@@ -20,7 +20,7 @@ CURSOR cursor = { { 1, 1 }, {1, 1} };
 
 #define MOVE_DISTANCE 1
 #define FAST_MOVE_DISTANCE 10
-#define TIME_THRESHOLD 0.2
+#define TIME_THRESHOLD 0.17
 
 
 /* ================= game data =================== */
@@ -83,6 +83,14 @@ int main(void) {
 					}
 				}
 				on_click_space(get_current_object(cursor.current));
+				break;
+			case k_esc:
+				for (int i = 61; i < 99; i++) {
+					for (int j = 1; j < 17; j++) {
+						map[0][j][i] = ' ';
+					}
+				}
+				break;
 			case k_none:
 			case k_undef:
 			default: break;
@@ -184,11 +192,14 @@ void cursor_move(DIRECTION dir, int distance) {
 		if (1 <= new_pos.row && new_pos.row <= MAP_Y - 2 && \
 			1 <= new_pos.column && new_pos.column <= MAP_X - 2) {
 
+			display_cursor(cursor);
+
 			cursor.previous = cursor.current;
 			cursor.current = new_pos;
+
+			display_cursor(cursor);
 		}
 	}
-	
 }
 
 /* ================= sample object movement =================== */
