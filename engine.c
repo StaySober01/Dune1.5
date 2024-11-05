@@ -8,13 +8,19 @@
 void init(void);
 void intro(void);
 void outro(void);
-void cursor_move(DIRECTION dir);
+void cursor_move(DIRECTION dir, int distance);
 void sample_obj_move(void);
+int get_current_object(POSITION pos);
+void on_click_space(int data);
 POSITION sample_obj_next_position(void);
 
 /* ================= control =================== */
 int sys_clock = 0;		// system-wide clock(ms)
 CURSOR cursor = { { 1, 1 }, {1, 1} };
+
+#define MOVE_DISTANCE 1
+#define FAST_MOVE_DISTANCE 10
+#define TIME_THRESHOLD 0.2
 
 
 /* ================= game data =================== */
@@ -46,18 +52,37 @@ int main(void) {
 	intro();
 	display(resource, map, cursor);
 
+	clock_t lastKeyTime = 0;
+	int lastKey = 0;
+
 	while (1) {
 		// loop 돌 때마다(즉, TICK==10ms마다) 키 입력 확인
 		KEY key = get_key();
 
 		// 키 입력이 있으면 처리
 		if (is_arrow_key(key)) {
-			cursor_move(ktod(key));
+			clock_t currentTime = clock();
+
+			double term = (double)(currentTime - lastKeyTime) / CLOCKS_PER_SEC;
+
+			int moveDistance = (key == lastKey && term < TIME_THRESHOLD) ? FAST_MOVE_DISTANCE : MOVE_DISTANCE;
+			
+
+			cursor_move(ktod(key), moveDistance);
+			lastKey = key;
+			lastKeyTime = currentTime;
 		}
 		else {
 			// 방향키 외의 입력
 			switch (key) {
 			case k_quit: outro();
+			case k_space:
+				for (int i = 61; i < 99; i++) {
+					for (int j = 1; j < 17; j++) {
+						map[0][j][i] = ' ';
+					}
+				}
+				on_click_space(get_current_object(cursor.current));
 			case k_none:
 			case k_undef:
 			default: break;
@@ -150,17 +175,20 @@ void init(void) {
 }
 
 // (가능하다면) 지정한 방향으로 커서 이동
-void cursor_move(DIRECTION dir) {
-	POSITION curr = cursor.current;
-	POSITION new_pos = pmove(curr, dir);
+void cursor_move(DIRECTION dir, int distance) {
+	for (int i = 0; i < distance; i++) {
+		POSITION curr = cursor.current;
+		POSITION new_pos = pmove(curr, dir);
 
-	// validation check
-	if (1 <= new_pos.row && new_pos.row <= MAP_Y - 2 && \
-		1 <= new_pos.column && new_pos.column <= MAP_X - 2) {
+		// validation check
+		if (1 <= new_pos.row && new_pos.row <= MAP_Y - 2 && \
+			1 <= new_pos.column && new_pos.column <= MAP_X - 2) {
 
-		cursor.previous = cursor.current;
-		cursor.current = new_pos;
+			cursor.previous = cursor.current;
+			cursor.current = new_pos;
+		}
 	}
+	
 }
 
 /* ================= sample object movement =================== */
@@ -219,4 +247,103 @@ void sample_obj_move(void) {
 	map[1][obj.pos.row][obj.pos.column] = obj.repr;
 
 	obj.next_move_time = sys_clock + obj.move_period;
+}
+
+int get_current_object(POSITION pos) {
+	return mapData[pos.row][pos.column];
+}
+
+void on_click_space(int data) {
+	
+	switch (data) {
+		case 10: {
+			char msg[] = "Base of Atreides.";
+			int msg_len = strlen(msg);
+
+			for (int i = 0; i < msg_len; i++) {
+				map[0][1][i + 61] = msg[i];
+			}
+
+			char msg2[] = "It can produce harvesters.";
+			int msg2_len = strlen(msg2);
+
+			for (int i = 0; i < msg2_len; i++) {
+				map[0][2][i + 61] = msg2[i];
+			}
+			break;
+		}
+
+		case 11: {
+			char msg3[] = "Plate of Atreides.";
+			int msg3_len = strlen(msg3);
+
+			for (int i = 0; i < msg3_len; i++) {
+				map[0][1][i + 61] = msg3[i];
+			}
+			break;
+		}
+
+		case 20: {
+			char msg[] = "Base of Harkonnen.";
+			int msg_len = strlen(msg);
+
+			for (int i = 0; i < msg_len; i++) {
+				map[0][1][i + 61] = msg[i];
+			}
+
+			char msg2[] = "It can produce harvesters.";
+			int msg2_len = strlen(msg2);
+
+			for (int i = 0; i < msg2_len; i++) {
+				map[0][2][i + 61] = msg2[i];
+			}
+			break;
+		}
+
+		case 21: {
+			char msg3[] = "Plate of Atreides.";
+			int msg3_len = strlen(msg3);
+
+			for (int i = 0; i < msg3_len; i++) {
+				map[0][1][i + 61] = msg3[i];
+			}
+			break;
+		}
+
+		case 30: {
+			char msg[] = "The most basic resource.";
+			int msg_len = strlen(msg);
+
+			for (int i = 0; i < msg_len; i++) {
+				map[0][1][i + 61] = msg[i];
+			}
+			break;
+		}
+
+		case 90: {
+			char msg[] = "A rock that can't go through.";
+			int msg_len = strlen(msg);
+
+			for (int i = 0; i < msg_len; i++) {
+				map[0][1][i + 61] = msg[i];
+			}
+			break;
+		}
+
+		default: {
+			char msg[] = "The topography is bad,";
+			int msg_len = strlen(msg);
+
+			for (int i = 0; i < msg_len; i++) {
+				map[0][1][i + 61] = msg[i];
+			}
+			char msg2[] = "so you can't build a building.";
+			int msg2_len = strlen(msg2);
+
+			for (int i = 0; i < msg2_len; i++) {
+				map[0][2][i + 61] = msg2[i];
+			}
+			break;
+		}
+	}
 }

@@ -7,7 +7,7 @@
 #include "common.h"
 
 KEY get_key(void);
-void printc(POSITION pos, char ch, int color);
+void printc(POSITION pos, char ch, int color, int back);
 void gotoxy(POSITION pos);
 void set_color(int color);
 

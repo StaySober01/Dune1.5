@@ -24,6 +24,14 @@ void printc(POSITION pos, char ch, int color, int back) {
 	printf("%c", ch);
 }
 
+void print_cursor(POSITION pos, char ch, int color) {
+	if (color >= 0) {
+		set_color(color);
+	}
+	gotoxy(pos);
+	printf("%c", ch);
+}
+
 KEY get_key(void) {
 	if (!_kbhit()) {  // 입력된 키가 있는지 확인
 		return k_none;
@@ -41,6 +49,8 @@ KEY get_key(void) {
 		case 80: return k_down;
 		default: return k_undef;
 		}
+	case 32:
+		return k_space;
 	default: return k_undef;
 	}
 }

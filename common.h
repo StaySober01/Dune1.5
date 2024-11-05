@@ -44,6 +44,7 @@ typedef enum {
 	// k_none: 입력된 키가 없음. d_stay(안 움직이는 경우)에 대응
 	k_none = 0, k_up, k_right, k_left, k_down,
 	k_quit,
+	k_space,
 	k_undef, // 정의되지 않은 키 입력	
 } KEY;
 
@@ -101,6 +102,18 @@ typedef struct {
 	int move_period;	// '몇 ms마다 한 칸 움직이는지'를 뜻함
 	int next_move_time;	// 다음에 움직일 시간
 } OBJECT_SAMPLE;
+
+#define ATREIDES_BASE 10
+#define ATREIDES_PLATE 11
+
+#define HARKONNEN_BASE 20
+#define HARKONNEN_PLATE 21
+
+#define SPICE 30
+
+#define ROCK 90
+
+int mapData[MAP_Y][MAP_X];
 
 #endif
 

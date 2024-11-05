@@ -75,55 +75,78 @@ void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 	for (int i = 0; i < MAX_Y; i++) {
 		for (int j = 0; j < MAX_X; j++) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
+				//아트레이디스 본진
 				if ((i == 15 || i == 16) && (j == 1 || j == 2)) {
 					map[0][i][j] = 'B';
+					mapData[i][j] = ATREIDES_BASE;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 0, 9);
 				}
+				//하코넨 본진
 				else if ((i == 1 || i == 2) && (j == 57 || j == 58)) {
 					map[0][i][j] = 'B';
+					mapData[i][j] = HARKONNEN_BASE;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 0, 12);
 				}
-				else if (((i == 15 || i == 16) && (j == 3 || j == 4)) || ((i == 1 || i == 2) && (j == 55 || j == 56))) {
+				//아트레이디스 장판
+				else if (((i == 15 || i == 16) && (j == 3 || j == 4))) {
 					map[0][i][j] = 'P';
+					mapData[i][j] = ATREIDES_PLATE;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 0);
 				}
+				//하코넨 장판
+				else if ((i == 1 || i == 2) && (j == 55 || j == 56)) {
+					map[0][i][j] = 'P';
+					mapData[i][j] = HARKONNEN_PLATE;
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 0);
+				}
+				//스파이스
 				else if ((i == 12 && j == 1) || (i == 5 && j == 58)) {
 					map[0][i][j] = 'S';
+					mapData[i][j] = SPICE;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 4);
 				}
+				//맵이 아닌 부분은 검정색 배경
 				else if ((i == 0 || i > 16 || j == 0 || j > 58)) {
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 0);
 				}
+				//바위
 				else if ((i == 5 || i == 6) && (j == 32 || j == 33)) {
 					map[0][i][j] = 'R';
+					mapData[i][j] = ROCK;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
 				}
 				else if ((i == 9 || i == 10) && (j == 20 || j == 21)) {
 					map[0][i][j] = 'R';
+					mapData[i][j] = ROCK;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
 				}
 				else if ((i == 11 || i == 12) && (j == 46 || j == 47)) {
 					map[0][i][j] = 'R';
+					mapData[i][j] = ROCK;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
 				}
 				else if (i == 3 && j == 13) {
 					map[0][i][j] = 'R';
+					mapData[i][j] = ROCK;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
 				}
 				else if (i == 8 && j == 40) {
 					map[0][i][j] = 'R';
+					mapData[i][j] = ROCK;
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
 				}
+				//맵
 				else {
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 0, 15);
@@ -143,10 +166,10 @@ void display_cursor(CURSOR cursor) {
 	POSITION curr = cursor.current;
 
 	char ch = frontbuf[prev.row][prev.column];
-	printc(padd(map_pos, prev), ch, COLOR_DEFAULT);
+	print_cursor(padd(map_pos, prev), ch, COLOR_DEFAULT);
 
 	ch = frontbuf[curr.row][curr.column];
-	printc(padd(map_pos, curr), ch, COLOR_CURSOR);
+	print_cursor(padd(map_pos, curr), ch, COLOR_CURSOR);
 }
 
 void display_state(char state[STATE_Y][STATE_X]) {
@@ -156,7 +179,7 @@ void display_state(char state[STATE_Y][STATE_X]) {
 		for (int j = 0; j < STATE_X; j++) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
 				POSITION pos = { i, j };
-				printc(padd(state_pos, pos), backbuf[i][j], COLOR_DEFAULT);
+				printc(padd(state_pos, pos), backbuf[i][j], COLOR_DEFAULT, 15);
 			}
 			frontbuf[i][j] = backbuf[i][j];
 		}
