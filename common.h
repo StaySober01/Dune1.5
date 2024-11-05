@@ -21,11 +21,10 @@
 #define STATE_Y 18
 
 #define MESSAGE_X 60
-#define MESSAGE_Y 30
+#define MESSAGE_Y 25
 
 #define COMMAND_X 100
-#define COMMAND_Y 30
-
+#define COMMAND_Y 25
 
 /* ================= 위치와 방향 =================== */
 // 맵에서 위치를 나타내는 구조체

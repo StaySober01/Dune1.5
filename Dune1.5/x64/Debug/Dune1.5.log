@@ -1,13 +1,14 @@
 ﻿  display.c
-C:\Users\kleenex\source\repos\Dune1.5\display.c(33,7): warning C4028: 정식 매개 변수 3이(가) 선언과 다릅니다.
-C:\Users\kleenex\source\repos\Dune1.5\display.c(76,23): warning C4028: 정식 매개 변수 1이(가) 선언과 다릅니다.
-  engine.c
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(47,20): warning C4048: 배열 첨자가 다릅니다. 'char (*)[18][60]'과(와) 'char [2][25][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(47,25): warning C4048: 배열 첨자가 다릅니다. 'char (*)[82]'과(와) 'char [18][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(47,41): warning C4048: 배열 첨자가 다릅니다. 'char (*)[40]'과(와) 'char [30][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(71,21): warning C4048: 배열 첨자가 다릅니다. 'char (*)[18][60]'과(와) 'char [2][25][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(71,26): warning C4048: 배열 첨자가 다릅니다. 'char (*)[82]'과(와) 'char [18][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(71,42): warning C4048: 배열 첨자가 다릅니다. 'char (*)[40]'과(와) 'char [30][100]'
-  io.c
-  코드를 생성하고 있습니다...
+C:\Users\kleenex\source\repos\Dune1.5\display.c(36,14): warning C4048: 배열 첨자가 다릅니다. 'char (*)[25][100]'과(와) 'char (*)[18][60]'
+C:\Users\kleenex\source\repos\Dune1.5\display.c(81,51): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(86,51): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(91,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(96,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(100,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(105,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(110,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(115,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(120,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(125,52): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
+C:\Users\kleenex\source\repos\Dune1.5\display.c(129,51): warning C4020: 'printc': 실제 매개 변수가 너무 많습니다.
   Dune1.5.vcxproj -> C:\Users\kleenex\source\repos\Dune1.5\x64\Debug\Dune1.5.exe

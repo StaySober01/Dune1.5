@@ -44,7 +44,7 @@ int main(void) {
 
 	init();
 	intro();
-	display(resource, map, state, message, command, cursor);
+	display(resource, map, cursor);
 
 	while (1) {
 		// loop 돌 때마다(즉, TICK==10ms마다) 키 입력 확인
@@ -68,7 +68,7 @@ int main(void) {
 		sample_obj_move();
 
 		// 화면 출력
-		display(resource, map, state, message, command, cursor);
+		display(resource, map, cursor);
 		Sleep(TICK);
 		sys_clock += 10;
 	}
@@ -97,7 +97,7 @@ void intro(void) {
 	printf("####################################################################################################\n");
 	printf("####################################################################################################\n");
 	printf("####################################################################################################\n");
-	Sleep(3000);
+	Sleep(500);
 	system("cls");
 }
 

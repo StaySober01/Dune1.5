@@ -12,9 +12,13 @@ void set_color(int color) {
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
-void printc(POSITION pos, char ch, int color) {
-	if (color >= 0) {
-		set_color(color);
+void set_color_bg(int text, int back) {
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), text | (back << 4));
+}
+
+void printc(POSITION pos, char ch, int color, int back) {
+	if (color >= 0 && back >= 0) {
+		set_color_bg(color, back);
 	}
 	gotoxy(pos);
 	printf("%c", ch);

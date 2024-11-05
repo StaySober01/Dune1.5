@@ -15,7 +15,7 @@ char frontbuf[MAX_Y][MAX_X] = { 0 };
 void project(char src[N_LAYER][MAX_Y][MAX_X], char dest[MAX_Y][MAX_X]);
 void state_project(char src[STATE_Y][STATE_X], char dest[MAX_Y][MAX_X]);
 void display_resource(RESOURCE resource);
-void display_map(char map[N_LAYER][MAP_Y][MAP_X]);
+void display_map(char map[N_LAYER][MAX_Y][MAX_X]);
 void display_state(char state[STATE_Y][STATE_X]);
 void display_cursor(CURSOR cursor);
 
@@ -30,14 +30,10 @@ const POSITION command_pos = { 19, 61 };
 void display(
 	RESOURCE resource,
 	char map[N_LAYER][MAP_Y][MAP_X],
-	char state[STATE_Y][STATE_X],
-	char message[MESSAGE_Y - MAP_Y][MESSAGE_X],
-	char command[COMMAND_Y - MAP_Y][COMMAND_X - MAP_X],
 	CURSOR cursor)
 {
 	display_resource(resource);
 	display_map(map);
-	display_state(state);
 	display_cursor(cursor);
 }
 
@@ -79,12 +75,66 @@ void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 	for (int i = 0; i < MAX_Y; i++) {
 		for (int j = 0; j < MAX_X; j++) {
 			if (frontbuf[i][j] != backbuf[i][j]) {
-				POSITION pos = { i, j };
-				printc(padd(map_pos, pos), backbuf[i][j], COLOR_DEFAULT);
+				if ((i == 15 || i == 16) && (j == 1 || j == 2)) {
+					map[0][i][j] = 'B';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 0, 9);
+				}
+				else if ((i == 1 || i == 2) && (j == 57 || j == 58)) {
+					map[0][i][j] = 'B';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 0, 12);
+				}
+				else if (((i == 15 || i == 16) && (j == 3 || j == 4)) || ((i == 1 || i == 2) && (j == 55 || j == 56))) {
+					map[0][i][j] = 'P';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 0);
+				}
+				else if ((i == 12 && j == 1) || (i == 5 && j == 58)) {
+					map[0][i][j] = 'S';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 4);
+				}
+				else if ((i == 0 || i > 16 || j == 0 || j > 58)) {
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 0);
+				}
+				else if ((i == 5 || i == 6) && (j == 32 || j == 33)) {
+					map[0][i][j] = 'R';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
+				}
+				else if ((i == 9 || i == 10) && (j == 20 || j == 21)) {
+					map[0][i][j] = 'R';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
+				}
+				else if ((i == 11 || i == 12) && (j == 46 || j == 47)) {
+					map[0][i][j] = 'R';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
+				}
+				else if (i == 3 && j == 13) {
+					map[0][i][j] = 'R';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
+				}
+				else if (i == 8 && j == 40) {
+					map[0][i][j] = 'R';
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 15, 8);
+				}
+				else {
+					POSITION pos = { i, j };
+					printc(padd(map_pos, pos), backbuf[i][j], 0, 15);
+				}
 			}
 			frontbuf[i][j] = backbuf[i][j];
 		}
 	}
+
+	
+
 }
 
 // frontbuf[][]에서 커서 위치의 문자를 색만 바꿔서 그대로 다시 출력

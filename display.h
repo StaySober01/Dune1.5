@@ -14,6 +14,11 @@
 #define COLOR_DEFAULT	15
 #define COLOR_CURSOR	112
 #define COLOR_RESOURCE  112
+#define COLOR_ATREIDES  9
+#define COLOR_HARKONNEN 12
+#define COLOR_SPICE     4
+#define COLOR_SANDWORM  14
+#define COLOR_ETC       1
 
 
 
@@ -22,9 +27,6 @@
 void display(
 	RESOURCE resource,
 	char map[N_LAYER][MAP_Y][MAP_X],
-	char state[STATE_Y][STATE_X - MAP_Y],
-	char message[MESSAGE_Y - MAP_Y][MESSAGE_X],
-	char command[COMMAND_Y - MAP_Y][COMMAND_X - MAP_X],
 	CURSOR cursor
 );
 
