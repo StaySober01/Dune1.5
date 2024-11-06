@@ -1,15 +1,20 @@
 ﻿  engine.c
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(53,20): warning C4048: 배열 첨자가 다릅니다. 'char (*)[18][60]'과(와) 'char [2][25][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(104,21): warning C4048: 배열 첨자가 다릅니다. 'char (*)[18][60]'과(와) 'char [2][25][100]'
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(195,4): warning C4013: 'display_cursor'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(272,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(279,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(289,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(299,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(306,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(60,20): warning C4048: 배열 첨자가 다릅니다. 'char (*)[18][60]'과(와) 'char [2][25][100]'
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(138,21): warning C4048: 배열 첨자가 다릅니다. 'char (*)[18][60]'과(와) 'char [2][25][100]'
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(121,21): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(232,4): warning C4013: 'display_cursor'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(309,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
 C:\Users\kleenex\source\repos\Dune1.5\engine.c(316,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(326,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(336,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(346,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\kleenex\source\repos\Dune1.5\engine.c(352,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(323,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(330,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(340,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(350,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(357,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(367,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(377,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(387,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(397,18): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(403,19): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(427,16): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\kleenex\source\repos\Dune1.5\engine.c(443,17): warning C4267: '초기화 중': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   Dune1.5.vcxproj -> C:\Users\kleenex\source\repos\Dune1.5\x64\Debug\Dune1.5.exe

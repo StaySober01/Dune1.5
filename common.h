@@ -7,6 +7,20 @@
 #include <conio.h>
 #include <assert.h>
 
+/* ================ map data parameters ================== */
+
+#define ATREIDES_BASE 10
+#define ATREIDES_PLATE 11
+
+#define HARKONNEN_BASE 20
+#define HARKONNEN_PLATE 21
+
+#define SPICE 30
+
+#define ROCK 90
+
+
+
 /* ================= system parameters =================== */
 #define TICK 10		// time unit(ms)
 
@@ -25,6 +39,10 @@
 
 #define COMMAND_X 100
 #define COMMAND_Y 25
+
+int mapData[MAP_Y][MAP_X];
+int colorData[MAP_Y][MAP_X];
+int textData[MAP_Y][MAP_X];
 
 /* ================= 위치와 방향 =================== */
 // 맵에서 위치를 나타내는 구조체
@@ -46,6 +64,7 @@ typedef enum {
 	k_quit,
 	k_space,
 	k_esc,
+	k_h, k_s, k_f, k_m,
 	k_undef, // 정의되지 않은 키 입력	
 } KEY;
 
@@ -73,6 +92,10 @@ inline POSITION psub(POSITION p1, POSITION p2) {
 
 // 방향키인지 확인하는 함수
 #define is_arrow_key(k)		(k_up <= (k) && (k) <= k_down)
+
+#define is_command_key(k)   (k_h <= (k) && (k) <= k_m)
+
+#define is_command_obg(o)   ((o) == ATREIDES_BASE)
 
 // 화살표 '키'(KEY)를 '방향'(DIRECTION)으로 변환. 정수 값은 똑같으니 타입만 바꿔주면 됨
 #define ktod(k)		(DIRECTION)(k)
@@ -104,19 +127,14 @@ typedef struct {
 	int next_move_time;	// 다음에 움직일 시간
 } OBJECT_SAMPLE;
 
-#define ATREIDES_BASE 10
-#define ATREIDES_PLATE 11
+typedef struct {
+	POSITION pos;
+	char repr;
+	int move_period;
+	int next_move_time;
+}HARVESTER;
 
-#define HARKONNEN_BASE 20
-#define HARKONNEN_PLATE 21
 
-#define SPICE 30
-
-#define ROCK 90
-
-int mapData[MAP_Y][MAP_X];
-int colorData[MAP_Y][MAP_X];
-int textData[MAP_Y][MAP_X];
 
 #endif
 

@@ -53,6 +53,11 @@ KEY get_key(void) {
 		return k_space;
 	case 27:
 		return k_esc;
+	case 104:
+		return k_h;
+	case 72:
+		return k_h;
+
 	default: return k_undef;
 	}
 }

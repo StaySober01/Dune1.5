@@ -112,7 +112,7 @@ void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 					textData[i][j] = 15;
 				}
 				//스파이스
-				else if ((i == 12 && j == 1) || (i == 5 && j == 58)) {
+				else if ((i == 11 && j == 1) || (i == 6 && j == 58)) {
 					map[0][i][j] = 'S';
 					mapData[i][j] = SPICE;
 					POSITION pos = { i, j };

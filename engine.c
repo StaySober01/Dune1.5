@@ -12,6 +12,8 @@ void cursor_move(DIRECTION dir, int distance);
 void sample_obj_move(void);
 int get_current_object(POSITION pos);
 void on_click_space(int data);
+bool afford_spice(int price);
+DWORD WINAPI produce_harvester(LPVOID param);
 POSITION sample_obj_next_position(void);
 
 /* ================= control =================== */
@@ -29,6 +31,8 @@ char state[STATE_Y][STATE_X] = { 0 };
 char message[MESSAGE_Y][MESSAGE_X] = { 0 };
 char command[COMMAND_Y][COMMAND_X] = { 0 };
 
+int current_obg = 0;
+
 RESOURCE resource = {
 	.spice = 0,
 	.spice_max = 0,
@@ -44,6 +48,9 @@ OBJECT_SAMPLE obj = {
 	.next_move_time = 300
 };
 
+RESOURCE p_resource = { 20, 20, 0, 10 };
+RESOURCE ai_resource = { 0, 20, 0, 10 };
+
 /* ================= main() =================== */
 int main(void) {
 	srand((unsigned int)time(NULL));
@@ -54,6 +61,8 @@ int main(void) {
 
 	clock_t lastKeyTime = 0;
 	int lastKey = 0;
+
+	
 
 	while (1) {
 		// loop 돌 때마다(즉, TICK==10ms마다) 키 입력 확인
@@ -82,7 +91,9 @@ int main(void) {
 						map[0][j][i] = ' ';
 					}
 				}
-				on_click_space(get_current_object(cursor.current));
+				current_obg = get_current_object(cursor.current);
+				on_click_space(current_obg);
+				
 				break;
 			case k_esc:
 				for (int i = 61; i < 99; i++) {
@@ -90,7 +101,29 @@ int main(void) {
 						map[0][j][i] = ' ';
 					}
 				}
+				current_obg = 0;
 				break;
+			case k_h:
+				if (is_command_obg(current_obg)) {
+					if (afford_spice(5)) {
+						int production_time = 5;
+						HANDLE harvester;
+						harvester = CreateThread(NULL, 0, produce_harvester, &production_time, 0, NULL);
+						if (harvester == NULL) {
+							return 1;
+						}
+
+						break;
+					}
+					else {
+						char msg[] = "Not enough spice.";
+						int msg_len = strlen(msg);
+
+						for (int i = 0; i < msg_len; i++) {
+							map[0][18][i + 1] = msg[i];
+						}
+					}
+				}
 			case k_none:
 			case k_undef:
 			default: break;
@@ -267,7 +300,7 @@ int get_current_object(POSITION pos) {
 void on_click_space(int data) {
 	
 	switch (data) {
-		case 10: {
+		case ATREIDES_BASE: {
 			char msg[] = "Base of Atreides.";
 			int msg_len = strlen(msg);
 
@@ -281,10 +314,24 @@ void on_click_space(int data) {
 			for (int i = 0; i < msg2_len; i++) {
 				map[0][2][i + 61] = msg2[i];
 			}
+
+			char msg3[] = "H : Produce a harvester";
+			int msg3_len = strlen(msg3);
+
+			for (int i = 0; i < msg3_len; i++) {
+				map[0][18][i + 61] = msg3[i];
+			}
+
+			char msg4[] = "(takes 10 seconds)";
+			int msg4_len = strlen(msg4);
+
+			for (int i = 0; i < msg4_len; i++) {
+				map[0][19][i + 61] = msg4[i];
+			}
 			break;
 		}
 
-		case 11: {
+		case ATREIDES_PLATE: {
 			char msg3[] = "Plate of Atreides.";
 			int msg3_len = strlen(msg3);
 
@@ -294,7 +341,7 @@ void on_click_space(int data) {
 			break;
 		}
 
-		case 20: {
+		case HARKONNEN_BASE: {
 			char msg[] = "Base of Harkonnen.";
 			int msg_len = strlen(msg);
 
@@ -311,7 +358,7 @@ void on_click_space(int data) {
 			break;
 		}
 
-		case 21: {
+		case HARKONNEN_PLATE: {
 			char msg3[] = "Plate of Atreides.";
 			int msg3_len = strlen(msg3);
 
@@ -321,7 +368,7 @@ void on_click_space(int data) {
 			break;
 		}
 
-		case 30: {
+		case SPICE: {
 			char msg[] = "The most basic resource.";
 			int msg_len = strlen(msg);
 
@@ -331,7 +378,7 @@ void on_click_space(int data) {
 			break;
 		}
 
-		case 90: {
+		case ROCK: {
 			char msg[] = "A rock that can't go through.";
 			int msg_len = strlen(msg);
 
@@ -341,7 +388,7 @@ void on_click_space(int data) {
 			break;
 		}
 
-		default: {
+		default: {//기본 지형(건설불가)
 			char msg[] = "The topography is bad,";
 			int msg_len = strlen(msg);
 
@@ -357,4 +404,43 @@ void on_click_space(int data) {
 			break;
 		}
 	}
+}
+
+bool afford_spice(int price) {
+	if (price < p_resource.spice) {
+		p_resource.spice -= price;
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+DWORD WINAPI produce_harvester(LPVOID param) {
+	int production_time = *(int*)param;
+
+	char msg[] = "Producing harvester... It will takes 5 seconds.";
+	int msg_len = strlen(msg);
+
+	for (int i = 0; i < msg_len; i++) {
+		map[0][18][i+1] = msg[i];
+	}
+
+	Sleep(production_time * 1000);
+
+	for (int i = 1; i < 60; i++) {
+		for (int j = 18; j < 24; j++) {
+			map[0][j][i] = ' ';
+		}
+	}
+
+	char msg2[] = "Harvester produced.";
+
+	int msg2_len = strlen(msg2);
+
+	for (int i = 0; i < msg2_len; i++) {
+		map[0][18][i+1] = msg2[i];
+	}
+
+	return 0;
 }
