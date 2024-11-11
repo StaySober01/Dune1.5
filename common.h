@@ -11,6 +11,7 @@
 
 #define ATREIDES_BASE 10
 #define ATREIDES_PLATE 11
+#define ATREIDES_HAR 12
 
 #define HARKONNEN_BASE 20
 #define HARKONNEN_PLATE 21
@@ -41,8 +42,10 @@
 #define COMMAND_Y 25
 
 int mapData[MAP_Y][MAP_X];
+int unitData[MAP_Y][MAP_X];
 int colorData[MAP_Y][MAP_X];
 int textData[MAP_Y][MAP_X];
+int spiceData[MAP_Y][MAP_X];
 
 /* ================= 위치와 방향 =================== */
 // 맵에서 위치를 나타내는 구조체
@@ -75,6 +78,8 @@ typedef enum {
 } DIRECTION;
 
 
+
+
 /* ================= 위치와 방향(2) =================== */
 // 편의성을 위한 함수들. KEY, POSITION, DIRECTION 구조체들을 유기적으로 변환
 
@@ -96,6 +101,8 @@ inline POSITION psub(POSITION p1, POSITION p2) {
 #define is_command_key(k)   (k_h <= (k) && (k) <= k_m)
 
 #define is_command_obg(o)   ((o) == ATREIDES_BASE)
+
+#define is_unit(u)          ((u) == ATREIDES_HAR)
 
 // 화살표 '키'(KEY)를 '방향'(DIRECTION)으로 변환. 정수 값은 똑같으니 타입만 바꿔주면 됨
 #define ktod(k)		(DIRECTION)(k)
@@ -129,11 +136,16 @@ typedef struct {
 
 typedef struct {
 	POSITION pos;
+	POSITION dest;
 	char repr;
 	int move_period;
 	int next_move_time;
 }HARVESTER;
 
+typedef struct {
+	POSITION des;
+	POSITION pos;
+} HARPOSRETURNDATA;
 
 
 #endif

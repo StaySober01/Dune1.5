@@ -18,11 +18,13 @@ void display_resource(RESOURCE resource);
 void display_map(char map[N_LAYER][MAX_Y][MAX_X]);
 void display_state(char state[STATE_Y][STATE_X]);
 void display_cursor(CURSOR cursor);
+void update_spice(char map[N_LAYER][MAX_Y][MAX_X], POSITION pos);
 
 // 출력할 내용들의 좌상단(topleft) 좌표
 const POSITION resource_pos = { 0, 0 };
 const POSITION map_pos = { 1, 0 };
 const POSITION state_pos = { 1, 61 };
+
 const POSITION message_pos = { 19, 0 };
 const POSITION command_pos = { 19, 61 };
 
@@ -30,8 +32,11 @@ const POSITION command_pos = { 19, 61 };
 void display(
 	RESOURCE resource,
 	char map[N_LAYER][MAP_Y][MAP_X],
-	CURSOR cursor)
+	CURSOR cursor
+	)
 {
+	project(map, backbuf);
+
 	display_resource(resource);
 	display_map(map);
 	display_cursor(cursor);
@@ -70,7 +75,6 @@ void state_project(char src[STATE_Y][STATE_X], char dest[MAX_Y][MAX_X]) {
 }
 
 void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
-	project(map, backbuf);
 
 	for (int i = 0; i < MAX_Y; i++) {
 		for (int j = 0; j < MAX_X; j++) {
@@ -112,10 +116,28 @@ void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 					textData[i][j] = 15;
 				}
 				//스파이스
-				else if ((i == 11 && j == 1) || (i == 6 && j == 58)) {
-					map[0][i][j] = 'S';
+				else if (i == 11 && j == 1) {
+					if (spiceData[i][j] <= 0) {
+						mapData[i][j] = -1;
+						unitData[i][j] = -1;
+						colorData[i][j] = 15;
+						textData[i][j] = 15;
+						POSITION pos = { i, j };
+						printc(padd(map_pos, pos), backbuf[i][j], 15, 4);
+					}
+					else {
+						mapData[i][j] = SPICE;
+						POSITION pos = { i, j };
+						update_spice(map, pos);
+						printc(padd(map_pos, pos), backbuf[i][j], 15, 4);
+						colorData[i][j] = 4;
+						textData[i][j] = 15;
+					}
+				}
+				else if (i == 6 && j == 58) {
 					mapData[i][j] = SPICE;
 					POSITION pos = { i, j };
+					update_spice(map, pos);
 					printc(padd(map_pos, pos), backbuf[i][j], 15, 4);
 					colorData[i][j] = 4;
 					textData[i][j] = 15;
@@ -166,10 +188,11 @@ void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 					colorData[i][j] = 8;
 					textData[i][j] = 15;
 				}
-				//맵
 				else {
 					POSITION pos = { i, j };
 					printc(padd(map_pos, pos), backbuf[i][j], 0, 15);
+					mapData[i][j] = -1;
+					unitData[i][j] = -1;
 					colorData[i][j] = 15;
 					textData[i][j] = 15;
 				}
@@ -177,9 +200,17 @@ void display_map(char map[N_LAYER][MAX_Y][MAX_X]) {
 			frontbuf[i][j] = backbuf[i][j];
 		}
 	}
+}
 
-	
+void display_harvester(HARVESTER har) {
+	unitData[har.pos.row][har.pos.column] = ATREIDES_HAR;
+	colorData[har.pos.row][har.pos.column] = 9;
+	textData[har.pos.row][har.pos.column] = 0;
+	printc(padd(map_pos, har.pos), backbuf[har.pos.row][har.pos.column], 0, 9);
+}
 
+void update_spice(char map[N_LAYER][MAX_Y][MAX_X], POSITION pos) {
+	map[0][pos.row][pos.column] = (char)(spiceData[pos.row][pos.column] + '0');
 }
 
 // frontbuf[][]에서 커서 위치의 문자를 색만 바꿔서 그대로 다시 출력

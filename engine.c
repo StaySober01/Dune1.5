@@ -9,12 +9,13 @@ void init(void);
 void intro(void);
 void outro(void);
 void cursor_move(DIRECTION dir, int distance);
-void sample_obj_move(void);
 int get_current_object(POSITION pos);
 void on_click_space(int data);
 bool afford_spice(int price);
 DWORD WINAPI produce_harvester(LPVOID param);
-POSITION sample_obj_next_position(void);
+void update_msg(int count, char msg[]);
+HARPOSRETURNDATA har_next_position(HARVESTER har);
+HARPOSRETURNDATA har_move(HARVESTER har);
 
 /* ================= control =================== */
 int sys_clock = 0;		// system-wide clock(ms)
@@ -32,6 +33,7 @@ char message[MESSAGE_Y][MESSAGE_X] = { 0 };
 char command[COMMAND_Y][COMMAND_X] = { 0 };
 
 int current_obg = 0;
+int msg_count = 0;
 
 RESOURCE resource = {
 	.spice = 0,
@@ -40,16 +42,20 @@ RESOURCE resource = {
 	.population_max = 0
 };
 
-OBJECT_SAMPLE obj = {
-	.pos = {1, 1},
-	.dest = {MAP_Y - 2, MAP_X - 2},
-	.repr = 'o',
-	.move_period = 300,
-	.next_move_time = 300
+HARVESTER har1 = {
+	.pos = {14, 1},
+	.dest = {12, 1},
+	.repr = 'H',
+	.move_period = 10,
+	.next_move_time = 10
 };
 
-RESOURCE p_resource = { 20, 20, 0, 10 };
+RESOURCE p_resource = { 20, 100, 0, 10 };
 RESOURCE ai_resource = { 0, 20, 0, 10 };
+
+bool collect_flag = false;
+bool har_moved_flag = false;
+bool har_arrived_flag = false;
 
 /* ================= main() =================== */
 int main(void) {
@@ -58,11 +64,11 @@ int main(void) {
 	init();
 	intro();
 	display(resource, map, cursor);
+	display_harvester(har1);
 
 	clock_t lastKeyTime = 0;
 	int lastKey = 0;
 
-	
 
 	while (1) {
 		// loop 돌 때마다(즉, TICK==10ms마다) 키 입력 확인
@@ -91,6 +97,12 @@ int main(void) {
 						map[0][j][i] = ' ';
 					}
 				}
+
+				for (int i = 18; i < 24; i++) {
+					for (int j = 61; j < 99; j++) {
+						map[0][i][j] = ' ';
+					}
+				}
 				current_obg = get_current_object(cursor.current);
 				on_click_space(current_obg);
 				
@@ -99,6 +111,11 @@ int main(void) {
 				for (int i = 61; i < 99; i++) {
 					for (int j = 1; j < 17; j++) {
 						map[0][j][i] = ' ';
+					}
+				}
+				for (int i = 18; i < 24; i++) {
+					for (int j = 61; j < 99; j++) {
+						map[0][i][j] = ' ';
 					}
 				}
 				current_obg = 0;
@@ -117,11 +134,9 @@ int main(void) {
 					}
 					else {
 						char msg[] = "Not enough spice.";
-						int msg_len = strlen(msg);
-
-						for (int i = 0; i < msg_len; i++) {
-							map[0][18][i + 1] = msg[i];
-						}
+						
+						update_msg(msg_count, msg);
+						break;
 					}
 				}
 			case k_none:
@@ -130,11 +145,22 @@ int main(void) {
 			}
 		}
 
-		// 샘플 오브젝트 동작
-		sample_obj_move();
+		HARPOSRETURNDATA har_pos_data;
+		har_pos_data = har_move(har1);
+		har1.pos = har_pos_data.pos;
+
+		if (har_moved_flag) {
+			har1.next_move_time = sys_clock + har1.move_period;
+		}
+
+		if (har_arrived_flag) {
+			har1.dest = har_pos_data.des;
+			har_arrived_flag = false;
+		}
 
 		// 화면 출력
-		display(resource, map, cursor);
+		display(p_resource, map, cursor);
+		display_harvester(har1);
 		Sleep(TICK);
 		sys_clock += 10;
 	}
@@ -211,8 +237,10 @@ void init(void) {
 		}
 	}
 
-	// object sample
-	map[1][obj.pos.row][obj.pos.column] = 'o';
+	spiceData[11][1] = 9;
+	spiceData[6][58] = 9;
+
+	map[1][har1.pos.row][har1.pos.column] = har1.repr;
 }
 
 // (가능하다면) 지정한 방향으로 커서 이동
@@ -235,28 +263,33 @@ void cursor_move(DIRECTION dir, int distance) {
 	}
 }
 
-/* ================= sample object movement =================== */
-POSITION sample_obj_next_position(void) {
-	// 현재 위치와 목적지를 비교해서 이동 방향 결정	
-	POSITION diff = psub(obj.dest, obj.pos);
+HARPOSRETURNDATA har_next_position(HARVESTER har) {
+	POSITION diff = psub(har.dest, har.pos);
 	DIRECTION dir;
 
-	// 목적지 도착. 지금은 단순히 원래 자리로 왕복
+	HARPOSRETURNDATA return_data;
+
+	
+
 	if (diff.row == 0 && diff.column == 0) {
-		if (obj.dest.row == 1 && obj.dest.column == 1) {
-			// topleft --> bottomright로 목적지 설정
-			POSITION new_dest = { MAP_Y - 2, MAP_X - 2 };
-			obj.dest = new_dest;
+		har_arrived_flag = true;
+		if (!collect_flag) {
+			collect_flag = true;
+			spiceData[11][1] -= 1;
+			map[0][11][1] = (char)(spiceData[11][1] + '0');
+			POSITION new_dest = { 14, 1 };
+			return_data.des = new_dest;
 		}
-		else {
-			// bottomright --> topleft로 목적지 설정
-			POSITION new_dest = { 1, 1 };
-			obj.dest = new_dest;
+		else if (p_resource.spice_max - p_resource.spice >= 5 && collect_flag) {
+			p_resource.spice += 5;
+			collect_flag = false;
+			POSITION new_dest = { 12, 1 };
+			return_data.des = new_dest;
 		}
-		return obj.pos;
+		return_data.pos = har.pos;
+		return return_data;
 	}
 
-	// 가로축, 세로축 거리를 비교해서 더 먼 쪽 축으로 이동
 	if (abs(diff.row) >= abs(diff.column)) {
 		dir = (diff.row >= 0) ? d_down : d_up;
 	}
@@ -264,37 +297,41 @@ POSITION sample_obj_next_position(void) {
 		dir = (diff.column >= 0) ? d_right : d_left;
 	}
 
-	// validation check
-	// next_pos가 맵을 벗어나지 않고, (지금은 없지만)장애물에 부딪히지 않으면 다음 위치로 이동
-	// 지금은 충돌 시 아무것도 안 하는데, 나중에는 장애물을 피해가거나 적과 전투를 하거나... 등등
-	POSITION next_pos = pmove(obj.pos, dir);
-	if (1 <= next_pos.row && next_pos.row <= MAP_Y - 2 && \
-		1 <= next_pos.column && next_pos.column <= MAP_X - 2 && \
-		map[1][next_pos.row][next_pos.column] < 0) {
-
-		return next_pos;
-	}
-	else {
-		return obj.pos;  // 제자리
-	}
+	POSITION next_pos = pmove(har.pos, dir);
+	return_data.des = har.dest;
+	return_data.pos = next_pos;
+	return return_data;
 }
 
-void sample_obj_move(void) {
-	if (sys_clock <= obj.next_move_time) {
-		// 아직 시간이 안 됐음
-		return;
+HARPOSRETURNDATA har_move(HARVESTER har) {
+	HARPOSRETURNDATA har_data;
+
+	if (sys_clock <= har.next_move_time) {
+		har_moved_flag = false;
+		har_data.pos = har.pos;
+		return har_data;
 	}
 
-	// 오브젝트(건물, 유닛 등)은 layer1(map[1])에 저장
-	map[1][obj.pos.row][obj.pos.column] = -1;
-	obj.pos = sample_obj_next_position();
-	map[1][obj.pos.row][obj.pos.column] = obj.repr;
+	map[1][har.pos.row][har.pos.column] = -1;
+	unitData[har.pos.row][har.pos.column] = -1;
+	colorData[har.pos.row][har.pos.column] = 15;
+	textData[har.pos.row][har.pos.column] = 0;
+	har_data = har_next_position(har);
+	har.pos = har_data.pos;
+	map[1][har.pos.row][har.pos.column] = har.repr;
 
-	obj.next_move_time = sys_clock + obj.move_period;
+	har_moved_flag = true;
+
+	return har_data;
 }
 
 int get_current_object(POSITION pos) {
-	return mapData[pos.row][pos.column];
+	if (is_unit(unitData[pos.row][pos.column])) {
+		return unitData[pos.row][pos.column];
+	}
+	else {
+		return mapData[pos.row][pos.column];
+	}
 }
 
 void on_click_space(int data) {
@@ -322,7 +359,7 @@ void on_click_space(int data) {
 				map[0][18][i + 61] = msg3[i];
 			}
 
-			char msg4[] = "(takes 10 seconds)";
+			char msg4[] = "(takes 5 seconds)";
 			int msg4_len = strlen(msg4);
 
 			for (int i = 0; i < msg4_len; i++) {
@@ -337,6 +374,16 @@ void on_click_space(int data) {
 
 			for (int i = 0; i < msg3_len; i++) {
 				map[0][1][i + 61] = msg3[i];
+			}
+			break;
+		}
+
+		case ATREIDES_HAR: {
+			char msg[] = "Harvester of Atreides.";
+			int msg_len = strlen(msg);
+
+			for (int i = 0; i < msg_len; i++) {
+				map[0][1][i + 61] = msg[i];
 			}
 			break;
 		}
@@ -407,7 +454,7 @@ void on_click_space(int data) {
 }
 
 bool afford_spice(int price) {
-	if (price < p_resource.spice) {
+	if (price <= p_resource.spice) {
 		p_resource.spice -= price;
 		return true;
 	}
@@ -416,31 +463,43 @@ bool afford_spice(int price) {
 	}
 }
 
+void update_msg(int count, char msg[]) {
+	int msg_len = strlen(msg);
+
+	if (count < 6) {
+		for (int i = 0; i < msg_len; i++) {
+			map[0][count + 18][i + 1] = msg[i];
+		}
+		msg_count++;
+	}
+	else {
+		for (int i = 19; i < 24; i++) {
+			for (int j = 1; j < 60; j++) {
+				map[0][i - 1][j] = map[0][i][j];
+			}
+		}
+
+		for (int i = 1; i < 60; i++) {
+			map[0][23][i] = ' ';
+		}
+
+		for (int i = 0; i < msg_len; i++) {
+			map[0][23][i + 1] = msg[i];
+		}
+	}
+}
+
 DWORD WINAPI produce_harvester(LPVOID param) {
 	int production_time = *(int*)param;
 
 	char msg[] = "Producing harvester... It will takes 5 seconds.";
-	int msg_len = strlen(msg);
+	update_msg(msg_count, msg);
 
-	for (int i = 0; i < msg_len; i++) {
-		map[0][18][i+1] = msg[i];
-	}
-
-	Sleep(production_time * 1000);
-
-	for (int i = 1; i < 60; i++) {
-		for (int j = 18; j < 24; j++) {
-			map[0][j][i] = ' ';
-		}
-	}
+	Sleep(production_time * 100);
 
 	char msg2[] = "Harvester produced.";
 
-	int msg2_len = strlen(msg2);
-
-	for (int i = 0; i < msg2_len; i++) {
-		map[0][18][i+1] = msg2[i];
-	}
+	update_msg(msg_count, msg2);
 
 	return 0;
 }

@@ -30,5 +30,7 @@ void display(
 	CURSOR cursor
 );
 
+void display_harvester(HARVESTER har);
+
 #endif
 
