@@ -32,5 +32,7 @@ void display(
 
 void display_harvester(HARVESTER har);
 
+void display_sandworm(SANDWORMS worm);
+
 #endif
 

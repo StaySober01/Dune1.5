@@ -18,6 +18,8 @@
 
 #define SPICE 30
 
+#define SANDWORM 40
+
 #define ROCK 90
 
 
@@ -40,6 +42,8 @@
 
 #define COMMAND_X 100
 #define COMMAND_Y 25
+
+#define MAX_HAR 20
 
 int mapData[MAP_Y][MAP_X];
 int unitData[MAP_Y][MAP_X];
@@ -102,7 +106,7 @@ inline POSITION psub(POSITION p1, POSITION p2) {
 
 #define is_command_obg(o)   ((o) == ATREIDES_BASE)
 
-#define is_unit(u)          ((u) == ATREIDES_HAR)
+#define is_unit(u)          ((u) == ATREIDES_HAR || (u) == SANDWORM)
 
 // 화살표 '키'(KEY)를 '방향'(DIRECTION)으로 변환. 정수 값은 똑같으니 타입만 바꿔주면 됨
 #define ktod(k)		(DIRECTION)(k)
@@ -143,10 +147,28 @@ typedef struct {
 }HARVESTER;
 
 typedef struct {
+	POSITION pos;
+	POSITION dest;
+	POSITION tail;
+	POSITION mid[3];
+	char repr;
+	int move_period;
+	int next_move_time;
+}SANDWORMS;
+
+POSITION wormpos[2][5];
+
+typedef struct {
 	POSITION des;
 	POSITION pos;
-} HARPOSRETURNDATA;
+} HARDATA;
 
+typedef struct {
+	POSITION des;
+	POSITION pos;
+	POSITION mid[3];
+	POSITION tail;
+}WORMDATA;
 
 #endif
 

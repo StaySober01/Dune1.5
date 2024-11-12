@@ -209,6 +209,29 @@ void display_harvester(HARVESTER har) {
 	printc(padd(map_pos, har.pos), backbuf[har.pos.row][har.pos.column], 0, 9);
 }
 
+void display_sandworm(SANDWORMS worm) {
+	unitData[worm.pos.row][worm.pos.column] = SANDWORM;
+	printc(padd(map_pos, worm.pos), backbuf[worm.pos.row][worm.pos.column], 0, 14);
+	for (int i = 0; i < 3; i++) {
+		unitData[worm.mid[i].row][worm.mid[i].column] = SANDWORM;
+		printc(padd(map_pos, worm.mid[i]), backbuf[worm.mid[i].row][worm.mid[i].column], 0, 14);
+	}
+	unitData[worm.tail.row][worm.tail.column] = SANDWORM;
+	printc(padd(map_pos, worm.tail), backbuf[worm.tail.row][worm.tail.column], 0, 14);
+
+	colorData[worm.pos.row][worm.pos.column] = 14;
+	for (int i = 0; i < 3; i++) {
+		colorData[worm.mid[i].row][worm.mid[i].column] = 14;
+	}
+	colorData[worm.tail.row][worm.tail.column] = 14;
+
+	textData[worm.pos.row][worm.pos.column] = 0;
+	for (int i = 0; i < 3; i++) {
+		textData[worm.mid[i].row][worm.mid[i].column] = 0;
+	}
+	textData[worm.tail.row][worm.tail.column] = 0;
+}
+
 void update_spice(char map[N_LAYER][MAX_Y][MAX_X], POSITION pos) {
 	map[0][pos.row][pos.column] = (char)(spiceData[pos.row][pos.column] + '0');
 }
