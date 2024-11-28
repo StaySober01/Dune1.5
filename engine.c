@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <assert.h>
+#include <limits.h>
 #include "common.h"
 #include "io.h"
 #include "display.h"
@@ -23,6 +24,11 @@ HARDATA har_next_position(HARVESTER har);
 HARDATA har_move(HARVESTER har);
 WORMDATA worm_next_position(SANDWORMS worm);
 WORMDATA worm_move(SANDWORMS worm);
+POSITION find_closest_obj(SANDWORMS worm);
+
+typedef struct {
+	int y, x, dist;
+}NODE;
 
 /* ================= control =================== */
 int sys_clock = 0;		// system-wide clock(ms)
@@ -196,6 +202,8 @@ int main(void) {
 			display_harvester(hars[i]);
 		}
 
+		worm1.dest = find_closest_obj(worm1);
+
 		WORMDATA worm1_data;
 		worm1_data = worm_move(worm1);
 		worm1.pos = worm1_data.pos;
@@ -243,6 +251,7 @@ void intro(void) {
 }
 
 void outro(void) {
+	system("cls");
 	printf("exiting...\n");
 	exit(0);
 }
@@ -283,6 +292,11 @@ void init(void) {
 	for (int i = 0; i < MAX_Y; i++) {
 		for (int j = 0; j < MAX_X; j++) {
 			map[1][i][j] = -1;
+		}
+	}
+	for (int i = 0; i < MAP_Y; i++) {
+		for (int j = 0; j < MAP_X; j++) {
+			unitData[i][j];
 		}
 	}
 
@@ -455,6 +469,83 @@ int get_current_object(POSITION pos) {
 		return mapData[pos.row][pos.column];
 	}
 }
+
+POSITION find_closest_obj(SANDWORMS worm) {
+	// 동적 메모리 할당
+	int** visited = (int**)malloc(MAP_Y * sizeof(int*));
+	if (visited == NULL) {
+		printf("메모리 할당 실패\n");
+		return (POSITION) { -1, -1 }; // 실패한 경우 반환
+	}
+	for (int i = 0; i < MAP_Y; i++) {
+		visited[i] = (int*)calloc(MAP_X, sizeof(int));
+		if (visited[i] == NULL) {
+			printf("메모리 할당 실패\n");
+			// 이미 할당된 메모리 해제
+			for (int j = 0; j < i; j++) {
+				free(visited[j]);
+			}
+			free(visited);
+			return (POSITION) { -1, -1 };
+		}
+	}
+
+	NODE* queue = (NODE*)malloc(MAP_Y * MAP_X * sizeof(NODE));
+	if (queue == NULL) {
+		printf("메모리 할당 실패\n");
+		for (int i = 0; i < MAP_Y; i++) {
+			free(visited[i]);
+		}
+		free(visited);
+		return (POSITION) { -1, -1 };
+	}
+
+	int dy[4] = { -1, 1, 0, 0 };
+	int dx[4] = { 0, 0, -1, 1 };
+
+	int front = 0, rear = 0;
+
+	queue[rear++] = (NODE){ worm.pos.row, worm.pos.column, 0 };
+	visited[worm.pos.row][worm.pos.column] = 1;
+
+	while (front < rear) {
+		NODE current = queue[front++];
+		for (int i = 0; i < 4; i++) {
+			int ny = current.y + dy[i];
+			int nx = current.x + dx[i];
+
+			if (ny < 0 || nx < 0 || ny >= MAP_Y || nx >= MAP_X) continue;
+			if (visited[ny][nx]) continue;
+
+			visited[ny][nx] = 1;
+
+			if (unitData[ny][nx] == ATREIDES_HAR) {
+				POSITION dest = { ny, nx };
+
+				// 동적 메모리 해제
+				free(queue);
+				for (int i = 0; i < MAP_Y; i++) {
+					free(visited[i]);
+				}
+				free(visited);
+
+				return dest;
+			}
+
+			queue[rear++] = (NODE){ ny, nx, current.dist + 1 };
+		}
+	}
+
+	// 동적 메모리 해제
+	free(queue);
+	for (int i = 0; i < MAP_Y; i++) {
+		free(visited[i]);
+	}
+	free(visited);
+
+	return (POSITION) { -1, -1 }; // 유닛을 찾지 못한 경우
+}
+
 
 void on_click_space(int data) {
 	
